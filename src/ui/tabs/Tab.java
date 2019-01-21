@@ -12,9 +12,9 @@ import javafx.scene.paint.Color;
 import system.WorkspaceInstance;
 import ui.buttons.CloseButton;
 
-public class Tab extends BorderPane {
-	Label label;
-	CloseButton close;
+class Tab extends BorderPane {
+	private Label label;
+	private CloseButton close;
 
 	public Tab(IntegerProperty selected, int index, WorkspaceInstance workspaceInstance, TabAction action) {
 		setOnMouseClicked(event -> selected.set(index));
@@ -36,7 +36,7 @@ public class Tab extends BorderPane {
 		setSelected(amSelected.get());
 	}
 
-	void setSelected(boolean selected) {
+	private void setSelected(boolean selected) {
 		if (selected) {
 			setBackground(new Background(new BackgroundFill(
 					Color.WHITE,

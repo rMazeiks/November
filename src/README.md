@@ -2,7 +2,7 @@
 November is a JavaFX framework that takes care of letting the user arrange windows to customize the structure of the user interface.
 
 ## Inspiration
-Adobe Photoshop (and other Adobe software) has a nice way of letting the user open the panels they need, while keeping other panels hidden. Blender also lets the user open different sections of the UI in different places. JetBrains IDEs, like Intellij also let the user move tools to different locations on the screen.
+Adobe Photoshop (and other Adobe software) has a nice way of letting the user open the panels they need, while keeping other panels hidden. Blender lets the user open different sections of the UI in different places. JetBrains IDEs, like Intellij also let the user move tools to different locations on the screen.
 
 In any of these applications, the user has control over how they use the application. They can close the clutter they don't need, make tools they use frequently larger, and organize the panels in a way that makes sense to them.
 

@@ -13,14 +13,11 @@ import javafx.scene.transform.Scale;
 import ui.SideChosenAction;
 
 
-public class OverlayButton extends Group {
-	Polygon polygon = new Polygon();
-	private double w;
-	private double h;
+class OverlayButton extends Group {
+	private Polygon polygon = new Polygon();
+	Label label;
 
 	public OverlayButton(String name, Side side, double w, double h, SideChosenAction action) {
-		this.w = w;
-		this.h = h;
 
 		if (side == Side.CENTER) {
 			polygon.getPoints().addAll(
@@ -40,17 +37,17 @@ public class OverlayButton extends Group {
 
 
 		Rotate rot = new Rotate(side.angle(), 0.5, 0.5);
-		Scale scal = new Scale(w, h);
+		Scale scale = new Scale(w, h);
 
 		// applied in reverse order for some reason.
-		polygon.getTransforms().addAll(scal, rot);
+		polygon.getTransforms().addAll(scale, rot);
 
-		Label label = new Label(name);
+		label = new Label(name);
 		label.setAlignment(Pos.CENTER); // todo How can I make this centered??
 		label.setTextAlignment(TextAlignment.CENTER);
 		StackPane labelPane = new StackPane(label);
 		Point2D point = new Point2D(0.5, side == Side.CENTER ? 0.5 : 0.15);
-		point = scal.transform(rot.transform(point));
+		point = scale.transform(rot.transform(point));
 		labelPane.setTranslateX(point.getX());
 		labelPane.setTranslateY(point.getY());
 		labelPane.setAlignment(Pos.CENTER);
@@ -61,26 +58,19 @@ public class OverlayButton extends Group {
 
 		polygon.setOnMouseClicked(e -> action.chosen(side));
 
-		setOnMouseEntered(e -> fill(0.8));
-		setOnMouseExited(e -> fill(0.9));
-		fill(0.9);
-		setOnMousePressed(e -> fill(0.7));
-	}
-
-	private double scaleX(double x) {
-		x -= w / 2;
-		x /= 2;
-		return x + w / 2;
-	}
-
-	private double scaleY(double y) {
-		y -= h / 2;
-		y /= 2;
-		return y + h / 2;
+		setOnMouseEntered(e -> fill(1, 0.9));
+		setOnMouseExited(e -> fill(0.2, 0.8));
+		fill(0.2, 0.8);
+		setOnMousePressed(e -> fill(1, 1));
 	}
 
 
-	private void fill(double f) {
-		polygon.setFill(Color.gray(f));
+	private void fill(double gray, double opacity) {
+		polygon.setFill(Color.gray(gray, opacity));
+		if(gray>0.5)  {
+			label.setTextFill(Color.BLACK);
+		} else  {
+			label.setTextFill(Color.WHITE);
+		}
 	}
 }

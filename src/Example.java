@@ -1,9 +1,9 @@
+import javafx.scene.control.Label;
 import system.WindowSystem;
 import system.Workspace;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;

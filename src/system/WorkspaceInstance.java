@@ -3,8 +3,8 @@ package system;
 import javafx.scene.Node;
 
 public class WorkspaceInstance {
-	Node content;
-	String name;
+	private Node content;
+	private String name;
 
 	public WorkspaceInstance(Workspace workspace) {
 		name = workspace.name();

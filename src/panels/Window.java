@@ -1,6 +1,7 @@
 package panels;
 
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -9,16 +10,15 @@ import system.WindowSystem;
 import system.WorkspaceInstance;
 
 public class Window extends Panel {
-	StackPane content = new StackPane();
-	Stage stage = new Stage();
-
-	Control myControl;
+	private double pressStartX, pressStartY;
+	private StackPane content = new StackPane();
+	private Stage stage = new Stage();
+	private Control myControl;
 
 	public Window(WindowSystem system) {
 		super(system);
 
-		stage.initStyle(StageStyle.UNDECORATED);
-		stage.setFullScreen(true);
+		setup();
 
 		Scene s = new Scene(content);
 
@@ -36,6 +36,23 @@ public class Window extends Panel {
 		take(new TabPanel(new WorkspaceInstance(system.getWorkspaces().get(0)), system));
 
 		stage.setScene(s);
+	}
+
+	private void setup() {
+		stage.initStyle(StageStyle.UNDECORATED);
+		stage.setFullScreen(true);
+
+		content.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+//			System.out.println("Pressed");
+			pressStartX = event.getSceneX();
+			pressStartY = event.getSceneY();
+		});
+
+		content.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+//			System.out.println("Dragged");
+			stage.setX(event.getScreenX() - pressStartX);
+			stage.setY(event.getScreenY() - pressStartY);
+		});
 	}
 
 	private void take(Panel panel) {

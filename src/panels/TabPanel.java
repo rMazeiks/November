@@ -2,6 +2,8 @@ package panels;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
@@ -14,20 +16,36 @@ import system.Control;
 import system.WindowSystem;
 import system.Workspace;
 import system.WorkspaceInstance;
-import ui.overlay.AddOverlay;
 import ui.ControlBar;
 import ui.buttons.AddButton;
 import ui.buttons.CloseButton;
+import ui.overlay.AddOverlay;
 
 import java.util.ArrayList;
 
-public class TabPanel extends Panel {
+/**
+ * A <code>Panel</code> that contains one or more <code>WorkspaceInstance</code>s. The user can view any of these, one at a time, by clicking the appropriate tab in a bar of tabs representing all the <code>WorkspaceInstance</code>s this <code>Panel</code> contains.
+ */
+class TabPanel extends Panel {
 
+	/**
+	 * A <code>StackPane</code> that contains the contentArea. It may also contain an <code>AddOverlay</code>.
+	 */
+	private StackPane contentArea = new StackPane();
+	/**
+	 * A <code>StackPane</code> that contains only the currently open tab
+	 */
+	private StackPane openTab = new StackPane();
+	private ObservableList<WorkspaceInstance> tabs = FXCollections.observableList(new ArrayList<>());
+	private ControlBar bar = new ControlBar(tabs);
+	private WorkspaceInstance toBeAdded;
 
-	StackPane contentArea = new StackPane(); // 0th element is the open tab, 1st element is overlay when adding a Panel
-	StackPane openTab = new StackPane();
-	ObservableList<WorkspaceInstance> tabs = FXCollections.observableList(new ArrayList<>());
-	ControlBar bar = new ControlBar(tabs);
+	private ChangeListener resizeListener_redrawOverlay = new ChangeListener() {
+		@Override
+		public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+			enterAddMode(toBeAdded);
+		}
+	};
 
 	public TabPanel(WorkspaceInstance w, WindowSystem system) {
 		super(system);
@@ -62,11 +80,9 @@ public class TabPanel extends Panel {
 			AddButton a = new AddButton();
 			a.setOnAction(e -> {
 				ContextMenu menu = new ContextMenu();
-				for (Workspace workspace : system.getWorkspaces()) {
+				for (Workspace workspace : getSystem().getWorkspaces()) {
 					MenuItem item = new MenuItem(workspace.name());
-					item.setOnAction(event -> {
-						enterAddMode(new WorkspaceInstance(workspace));
-					});
+					item.setOnAction(event -> enterAddMode(new WorkspaceInstance(workspace)));
 					menu.getItems().add(item);
 				}
 
@@ -89,7 +105,10 @@ public class TabPanel extends Panel {
 		openTab.getChildren().add(element);
 	}
 
-	void enterAddMode(WorkspaceInstance w) {
+	private void enterAddMode(WorkspaceInstance w) {
+		exitAddMode();
+		toBeAdded = w;
+
 		AddOverlay overlay = new AddOverlay(side -> {
 			if (side == ui.overlay.Side.CENTER) {
 				tabs.add(w);
@@ -122,11 +141,14 @@ public class TabPanel extends Panel {
 			exitAddMode();
 		}, openTab.getWidth(), openTab.getHeight());
 		contentArea.getChildren().add(overlay);
+
+		widthProperty().addListener(resizeListener_redrawOverlay);
+		heightProperty().addListener(resizeListener_redrawOverlay);
 	}
 
-	void exitAddMode() {
-		contentArea.getChildren().removeIf(node -> {
-			return node != openTab;
-		});
+	private void exitAddMode() {
+		contentArea.getChildren().removeIf(node -> node != openTab);
+		widthProperty().removeListener(resizeListener_redrawOverlay);
+		heightProperty().removeListener(resizeListener_redrawOverlay);
 	}
 }

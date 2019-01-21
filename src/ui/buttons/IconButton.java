@@ -9,14 +9,15 @@ import javafx.scene.layout.Background;
 import ui.ControlBar;
 
 public class IconButton extends Button {
-	ImageView visual;
-	Image white, black;
+	private ImageView visual;
+	private Image white;
+	private Image black;
 
 	private static final double OPACITY = 0.5;
 	private static final double OPACITY_HOVER = 0.9;
 
 
-	public IconButton(String resource, String resourceBlack) {
+	IconButton(String resource, String resourceBlack) {
 		white = new Image(getClass().getResourceAsStream(resource));
 		black = new Image(getClass().getResourceAsStream(resourceBlack));
 
@@ -30,12 +31,8 @@ public class IconButton extends Button {
 		this.setAlignment(Pos.CENTER);
 
 		setOpacity(OPACITY);
-		setOnMouseEntered(e -> {
-			setOpacity(OPACITY_HOVER);
-		});
-		setOnMouseExited(e->{
-			setOpacity(OPACITY);
-		});
+		setOnMouseEntered(e -> setOpacity(OPACITY_HOVER));
+		setOnMouseExited(e-> setOpacity(OPACITY));
 	}
 
 	public void setBlack(boolean b) {

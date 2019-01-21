@@ -2,18 +2,23 @@ package panels;
 
 import javafx.geometry.Orientation;
 import javafx.scene.control.SplitPane;
+import javafx.scene.input.MouseEvent;
 import system.Control;
 import system.WindowSystem;
 
-public class Split extends Panel {
+/**
+ * A <code>Panel</code> that contains exactly two other <code>Panel</code>s, either side by side or on top of each other
+ */
+class Split extends Panel {
 
-	SplitPane pane;
-	private Panel left;
-	private Panel right;
-	Control leftControl = new Control() {
+	private SplitPane pane;
+	private Panel panel0;
+	private Panel panel1;
+
+	private Control control0 = new Control() {
 		@Override
 		public void close() {
-			getControl().replace(right);
+			getControl().replace(panel1);
 		}
 
 		@Override
@@ -21,10 +26,11 @@ public class Split extends Panel {
 			set0(panel);
 		}
 	};
-	Control rightControl = new Control() {
+
+	private Control control1 = new Control() {
 		@Override
 		public void close() {
-			getControl().replace(left);
+			getControl().replace(panel0);
 		}
 
 		@Override
@@ -33,28 +39,55 @@ public class Split extends Panel {
 		}
 	};
 
-	public Split(Panel left, Panel right, WindowSystem system, Orientation orientation) {
+	/**
+	 * Creates a <code>Split</code> panel, with the specified contents organized in the specified <code>Orientation</code>, and a reference to the specified <code>WindowSystem</code>
+	 *
+	 * @param panel0      the left or top <code>Panel</code>
+	 * @param panel1      the right or bottom <code>Panel</code>
+	 * @param system      the <code>WindowSystem</code> this panel is a part of
+	 * @param orientation the orientation of the panels
+	 */
+	Split(Panel panel0, Panel panel1, WindowSystem system, Orientation orientation) {
 		super(system);
 
-		pane = new SplitPane(left, right);
+		pane = new SplitPane(panel0, panel1);
 
-		set0(left);
-		set1(right);
+		pane.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+			System.out.println("mouse pressed on panel");
+
+		});
+
+		pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+			System.out.println("mouse dragged on panel");
+		});
+
+		set0(panel0);
+		set1(panel1);
 
 		pane.setOrientation(orientation);
 
 		setCenter(pane);
 	}
 
-	public void set0(Panel zero) { // top or left
-		this.left = zero;
+	/**
+	 * Sets the top/left <code>Panel</code> to the one specified, and provides it with its parent's (this <code>Panel</code>'s) <code>Control</code>.
+	 *
+	 * @param zero the panel to set
+	 */
+	private void set0(Panel zero) {
+		this.panel0 = zero;
 		pane.getItems().set(0, zero);
-		zero.setControl(leftControl);
+		zero.setControl(control0);
 	}
 
-	public void set1(Panel one) { // bottom or right
-		this.right = one;
+	/**
+	 * Sets the bottom/right <code>Panel</code> to the one specified, and provides it with its parent's (this <code>Panel</code>'s) <code>Control</code>.
+	 *
+	 * @param one the panel to set
+	 */
+	private void set1(Panel one) {
+		this.panel1 = one;
 		pane.getItems().set(1, one);
-		one.setControl(rightControl);
+		one.setControl(control1);
 	}
 }

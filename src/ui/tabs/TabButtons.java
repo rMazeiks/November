@@ -8,11 +8,9 @@ import javafx.scene.layout.HBox;
 import system.WorkspaceInstance;
 
 public class TabButtons extends HBox {
-	IntegerProperty selected = new SimpleIntegerProperty(0);
-	private ObservableList<WorkspaceInstance> tabs;
+	private IntegerProperty selected = new SimpleIntegerProperty(0);
 
 	public TabButtons(ObservableList<WorkspaceInstance> tabs) {
-		this.tabs = tabs;
 		tabs.addListener((ListChangeListener<WorkspaceInstance>) c -> {
 
 			getChildren().removeIf(everything -> true);
@@ -21,12 +19,9 @@ public class TabButtons extends HBox {
 			for (int i = 0; i < workspaces.size(); i++) {
 				int index = i;
 
-				Tab t = new Tab(selected, index, workspaces.get(index), new TabAction() {
-					@Override
-					public void closed() {
-						if (index < selected.get()) selected.set(selected.get() - 1);
-						tabs.remove(index);
-					}
+				Tab t = new Tab(selected, index, workspaces.get(index), () -> {
+					if (index < selected.get()) selected.set(selected.get() - 1);
+					tabs.remove(index);
 				});
 
 				getChildren().add(t);
