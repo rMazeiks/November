@@ -9,6 +9,9 @@ import system.Control;
 import system.WindowSystem;
 import system.WorkspaceInstance;
 
+/**
+ * At the top of the hierarchy. Creates a window within which other Panels can be created
+ */
 public class Window extends Panel {
 	private double pressStartX, pressStartY;
 	private StackPane content = new StackPane();

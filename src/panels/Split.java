@@ -12,9 +12,18 @@ import system.WindowSystem;
 class Split extends Panel {
 
 	private SplitPane pane;
+	/**
+	 * The top or left item
+	 */
 	private Panel panel0;
+	/**
+	 * Bottom or right item
+	 */
 	private Panel panel1;
-
+	
+	/**
+	 * Controls panel0
+	 */
 	private Control control0 = new Control() {
 		@Override
 		public void close() {
@@ -26,7 +35,10 @@ class Split extends Panel {
 			set0(panel);
 		}
 	};
-
+	
+	/**
+	 * Controls panel 1
+	 */
 	private Control control1 = new Control() {
 		@Override
 		public void close() {
@@ -53,7 +65,7 @@ class Split extends Panel {
 		pane = new SplitPane(panel0, panel1);
 
 		pane.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-			System.out.println("mouse pressed on panel");
+			System.out.println("mouse pressed on split");
 
 		});
 
